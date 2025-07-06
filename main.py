@@ -1,3 +1,4 @@
+import asyncio
 import os
 from dotenv import load_dotenv
 from langchat import LangChat
@@ -14,11 +15,29 @@ except:
 print(f"Running in {env} environment")
 
 def main():
-    text = "Hello, how are you?"
-    langchat = LangChat("Translate the following from English into Arabic")
-    translated = langchat.translate_text(text)
+    subject = "Carrot"
+    system_template = "You are a helpful assistant that generates jokes " \
+    "based on the input text."
 
-    print("Translated:", translated)
+    langchat = LangChat(system_template)
 
+    print("Original:", subject)
+    print("\n")
+
+    joke = langchat.generate_joke(subject)
+    print("Joke:", joke)
+    print("\n")
+
+    print("Asyn joke:")
+    asyncio.run(langchat.generate_joke_async(subject))
+    print("\n")
+
+    joke = langchat.generate_joke_chat_template(
+        system_template,
+        subject
+    )
+    print("Joke from chat template:", joke)
+    print("\n")
+    
 if __name__ == "__main__":
     main()
