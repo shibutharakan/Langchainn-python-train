@@ -2,6 +2,7 @@ import asyncio
 import os
 from dotenv import load_dotenv
 from langchat import LangChat
+from rag import RAGDocument
 
 env = os.getenv('APP_ENV', 'development')
 
@@ -38,6 +39,22 @@ def main():
     )
     print("Joke from chat template:", joke)
     print("\n")
-    
+
+    rag = RAGDocument()
+    rag.loadDocument("Life Insurance Handbook (English).pdf")
+    rag.splitDocument(chunk_size=1000, chunk_overlap=200)
+    rag.embedDocuments()
+    rag.storeVectorDocuments()
+    query = "What is the purpose of life insurance?"
+    result = rag.getDocumentForQuery(query)
+    print(f"Query: {query}")
+    print(f"Result: {result.page_content[:200]}")
+    print(f"Metadata: {result.metadata}")
+    messages = [
+        "How many distribution centers does Nike have in the US?",
+        "When was Nike incorporated?"
+    ]
+    rag.getDocumentWithRetrievers(messages)
+    print("Retrieved documents for multiple queries.")
 if __name__ == "__main__":
     main()
